@@ -22,15 +22,50 @@ void Game::show_board()
 	}
 }
 
+void Game::init_snake(COORD& cursor_pos, const HANDLE& console)
+{
+	snake->tail = { 2,2 };
+	snake->head = { 2,3 };
+
+	cursor_pos.Y = snake->tail.first;
+	cursor_pos.X = snake->tail.second;
+
+	SetConsoleCursorPosition(console, cursor_pos);
+
+	std::cout << "*";
+
+	cursor_pos.Y = snake->head.first;
+	cursor_pos.X = snake->head.second;
+
+	SetConsoleCursorPosition(console, cursor_pos);
+
+	std::cout << "*";
+}
+
+void Game::move_snake(COORD& cursor_pos, const HANDLE& console /* Directions */)
+{
+	// TODO: hide cursor
+
+	// move tail
+	cursor_pos.Y = snake->tail.first;
+	cursor_pos.X = snake->tail.second;
+
+	SetConsoleCursorPosition(console, cursor_pos);
+
+	std::cout << " ";
+	snake->tail.second++;
+
+	// move head
+	cursor_pos.Y = snake->head.first;
+	cursor_pos.X = ++snake->head.second;
+
+	SetConsoleCursorPosition(console, cursor_pos);
+
+	std::cout << "*";
+}
+
 void Game::start_game()
-{	
-	// test
-	snake->head = { 1,2 };
-	snake->tail = { 1,1 };
-
-	board[snake->tail.first][snake->tail.second] = '*';
-	board[snake->head.first][snake->head.second] = '*';	
-
+{
 	this->show_board();
 
 	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -38,31 +73,16 @@ void Game::start_game()
 
 	CONSOLE_SCREEN_BUFFER_INFO csbi = { 0 };
 	GetConsoleScreenBufferInfo(console, &csbi);
-	COORD coordCur = csbi.dwCursorPosition;
+	COORD cursor_pos = csbi.dwCursorPosition;
+
+	// set inital snake position
+	this->init_snake(cursor_pos, console);	
+
 
 	while (true)
 	{
 		Sleep(1000);
-		
-		// TODO: hide cursor
-		coordCur.Y = snake->tail.first;
-		coordCur.X = snake->tail.second;		
 
-		// board[snake->tail.first][snake->tail.second] = ' ';
-		// board[snake->head.first][snake->head.second + 1] = '*';
-
-		SetConsoleCursorPosition(console, coordCur);
-
-		std::cout << " ";
-
-		// move head
-		coordCur.Y = snake->head.first;
-		coordCur.X = ++snake->head.second;
-
-		SetConsoleCursorPosition(console, coordCur);
-
-		std::cout << "*";
-
-		snake->tail.second++;	
+		this->move_snake(cursor_pos, console /* Direction */);
 	}
 }
