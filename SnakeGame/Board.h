@@ -7,4 +7,3 @@ public:
 
 	static char** create_board();
 };
-

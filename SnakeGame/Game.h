@@ -1,6 +1,7 @@
 #pragma once
 #include <queue>
 #include "Snake.h"
+#include "Direction.h"
 #include <Windows.h>
 
 class Game
@@ -15,7 +16,7 @@ public:
 	void init_snake(COORD& cursor_pos, const HANDLE& console);
 
 	void start_game();
-	void move_snake(COORD& cursor_pos, const HANDLE& console /* Directions */);
+	void move_snake(COORD& cursor_pos, const HANDLE& console, Direction dir);
 
 	// void end_game();
 };

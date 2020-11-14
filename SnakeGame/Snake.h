@@ -1,13 +1,14 @@
 #pragma once
 #include<utility>
+#include<queue>
+
 
 class Snake
 {
-public:
-	int size;
+public:	
+	// sequence of coordinates for each snake bit
+	std::queue<std::pair<int, int>> seq;
 
-	// coordinates of snakes head and tail
-	std::pair<int, int> head;
-	std::pair<int, int> tail;
+	int get_size();
 };
 
