@@ -48,42 +48,42 @@ void Game::init_snake(COORD& cursor_pos, const HANDLE& console)
 void Game::move_snake(COORD& cursor_pos, const HANDLE& console, Direction dir)
 {
 	// TODO: hide cursor
-	// move head
-
-	int x_head = snake->seq.back().second + 1;
-	int y_head = snake->seq.back().first;
-
-	cursor_pos.X = x_head;
-	cursor_pos.Y = y_head;
-
-	SetConsoleCursorPosition(console, cursor_pos);
-
-	std::cout << "*";
-	snake->seq.push({ y_head, x_head });
-
-
 
 	// move tail
 	// tail coordinates
-	int x_tail = snake->seq.front().second;
-	int y_tail = snake->seq.front().first;
+	int x = snake->seq.front().second;
+	int y = snake->seq.front().first;
 
-	cursor_pos.X = x_tail;
-	cursor_pos.Y = y_tail;
+	cursor_pos.X = x;
+	cursor_pos.Y = y;
 
 	SetConsoleCursorPosition(console, cursor_pos);
 
 	std::cout << " ";
+	board[y][x] = ' ';
 	snake->seq.pop();
 
+	// switch for new head coordinates
 	switch (dir)
 	{
 	case Direction::UP:
 		break;
 	case Direction::DOWN:
 		break;
-	case Direction::RIGHT:
+	case Direction::RIGHT: {
+		x = snake->seq.back().second + 1;
+		y = snake->seq.back().first;
+
+		cursor_pos.X = x;
+		cursor_pos.Y = y;
+
+		SetConsoleCursorPosition(console, cursor_pos);
+
+		std::cout << "*";
+		board[y][x] = '*';
+		snake->seq.push({ y, x });
 		break;
+	}
 	case Direction::LEFT:
 		break;
 	}	

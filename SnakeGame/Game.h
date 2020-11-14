@@ -9,15 +9,12 @@ class Game
 private:
 	char** board;
 	Snake* snake;
-
+	void show_board();
+	void init_snake(COORD& cursor_pos, const HANDLE& console);	
+	void move_snake(COORD& cursor_pos, const HANDLE& console, Direction dir);
 public:
 	Game();
-	void show_board();
-	void init_snake(COORD& cursor_pos, const HANDLE& console);
-
 	void start_game();
-	void move_snake(COORD& cursor_pos, const HANDLE& console, Direction dir);
-
 	// void end_game();
 };
 
