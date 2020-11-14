@@ -15,10 +15,10 @@ private:
 	Snake* snake;
 
 	void show_board();
-	void init_snake(COORD& cursor_pos, const HANDLE& console);	
-	void move_snake(COORD& cursor_pos, const HANDLE& console, Direction dir);
+	void init_snake();	
+	void move_snake(Direction dir);
 
-	void move_tail(COORD& cursor_pos, const HANDLE& console);
+	void move_tail();
 	// int move_head(COORD& cursor_pos, const HANDLE& console, Direction dir);
 public:
 	Game(const COORD& cursor_pos, const HANDLE& h_console);

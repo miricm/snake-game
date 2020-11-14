@@ -1,5 +1,7 @@
 #include <iostream>
 #include "Game.h"
+#include "CONSOLE.h"
+#include <Windows.h>
 
 using namespace std;
 
@@ -30,9 +32,13 @@ int main()
 
     // destroy board
 
-    //Game game();
 
-    //game.start_game();
+    HANDLE h = CONSOLE::get_console_handle();
+    COORD c = CONSOLE::get_cursor_position(h);
+
+    Game game(c, h);
+
+    game.start_game();
     
     return 0;
 }
