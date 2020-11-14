@@ -27,6 +27,10 @@ void Game::init_snake(COORD& cursor_pos, const HANDLE& console)
 	snake->seq.push({ 2,2 }); // front
 	snake->seq.push({ 2,3 }); // back
 
+	// fill the board object	
+	board[2][2] = '*';
+	board[2][3] = '*';
+
 	// set tail
 	cursor_pos.Y = snake->seq.front().first;
 	cursor_pos.X = snake->seq.front().second;
@@ -44,6 +48,20 @@ void Game::init_snake(COORD& cursor_pos, const HANDLE& console)
 void Game::move_snake(COORD& cursor_pos, const HANDLE& console, Direction dir)
 {
 	// TODO: hide cursor
+	// move head
+
+	int x_head = snake->seq.back().second + 1;
+	int y_head = snake->seq.back().first;
+
+	cursor_pos.X = x_head;
+	cursor_pos.Y = y_head;
+
+	SetConsoleCursorPosition(console, cursor_pos);
+
+	std::cout << "*";
+	snake->seq.push({ y_head, x_head });
+
+
 
 	// move tail
 	// tail coordinates
@@ -68,16 +86,7 @@ void Game::move_snake(COORD& cursor_pos, const HANDLE& console, Direction dir)
 		break;
 	case Direction::LEFT:
 		break;
-	}
-	
-	// move head
-
-	int x_head = snake->seq.back().second;
-	int y_head = snake->seq.back().first;
-
-	SetConsoleCursorPosition(console, cursor_pos);
-
-	std::cout << "*";
+	}	
 }
 
 void Game::start_game()
@@ -98,7 +107,7 @@ void Game::start_game()
 	while (true)
 	// game loop
 	{
-		Sleep(500);
+		Sleep(50);
 
 		this->move_snake(cursor_pos, console, Direction::RIGHT);
 	}
