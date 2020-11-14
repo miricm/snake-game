@@ -1,19 +1,33 @@
+#include <iostream>
 #include "CONSOLE.h"
 
-COORD CONSOLE::get_cursor_position(const HANDLE& h)
+void CONSOLE::init()
 {
-	CONSOLE_SCREEN_BUFFER_INFO info = { 0 };
-	GetConsoleScreenBufferInfo(h, &info);
+	// init handle
+	h_console = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (!h_console) throw "ERROR GETTING CONSOLE HANDLE!";
 
-	return info.dwCursorPosition;
+	// init cursor
+	CONSOLE_SCREEN_BUFFER_INFO info = { 0 };
+	GetConsoleScreenBufferInfo(h_console, &info);
+
+	cursor_pos = info.dwCursorPosition;
 }
 
-HANDLE CONSOLE::get_console_handle()
+void CONSOLE::write_at_coord(int x, int y, char c)
 {
-	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
-	if (!h) throw "ERROR GETTING CONSOLE HANDLE!";
-	
-	return h;
+	cursor_pos.X = x;
+	cursor_pos.Y = y;
+
+	SetConsoleCursorPosition(h_console, cursor_pos);
+
+	//if (c != ' ' || c != '*')
+	//{
+	//	throw "INVALID CHARACTER!";
+	//}
+		
+
+	std::cout << c;
 }
 
 void CONSOLE::destroy_handle(const HANDLE& h)

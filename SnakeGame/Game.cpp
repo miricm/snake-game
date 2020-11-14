@@ -1,13 +1,12 @@
 #include <iostream>
-#include <Windows.h>
 #include "Game.h"
 #include "Board.h"
+#include "CONSOLE.h"
 
-Game::Game(const COORD& cursor_pos, const HANDLE& h_console)
+#define _PAUSE_TIME   100
+
+Game::Game()
 {
-	this->cursor_pos = cursor_pos;
-	this->h_console  = h_console;
-
 	this->board = Board::create_board();
 	this->snake = new Snake;
 }
@@ -34,18 +33,8 @@ void Game::init_snake()
 	board[2][2] = '*';
 	board[2][3] = '*';
 
-	// set tail
-	cursor_pos.Y = snake->seq.front().first;
-	cursor_pos.X = snake->seq.front().second;
-	SetConsoleCursorPosition(h_console, cursor_pos);
-
-	std::cout << "*";
-
-	cursor_pos.Y = snake->seq.back().first;
-	cursor_pos.X = snake->seq.back().second;
-	SetConsoleCursorPosition(h_console, cursor_pos);
-
-	std::cout << "*";
+	CONSOLE::write_at_coord(2, 2, '*');
+	CONSOLE::write_at_coord(3, 2, '*');
 }
 
 void Game::move_snake(Direction dir)
@@ -64,12 +53,8 @@ void Game::move_snake(Direction dir)
 		int x = snake->seq.back().second + 1;
 		int y = snake->seq.back().first;
 
-		cursor_pos.X = x;
-		cursor_pos.Y = y;
+		CONSOLE::write_at_coord(x, y, '*');
 
-		SetConsoleCursorPosition(h_console, cursor_pos);
-
-		std::cout << "*";
 		board[y][x] = '*';
 		snake->seq.push({ y, x });
 		break;
@@ -81,17 +66,12 @@ void Game::move_snake(Direction dir)
 
 void Game::move_tail()
 {
-	// move tail
 	// tail coordinates
 	int x = snake->seq.front().second;
 	int y = snake->seq.front().first;
 
-	cursor_pos.X = x;
-	cursor_pos.Y = y;
+	CONSOLE::write_at_coord(x, y, ' ');
 
-	SetConsoleCursorPosition(h_console, cursor_pos);
-
-	std::cout << " ";
 	board[y][x] = ' ';
 	snake->seq.pop();
 }
@@ -100,12 +80,8 @@ void Game::start_game()
 {
 	this->show_board();
 
-	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
-	if (!console) return;
-
-	CONSOLE_SCREEN_BUFFER_INFO csbi = { 0 };
-	GetConsoleScreenBufferInfo(console, &csbi);
-	COORD cursor_pos = csbi.dwCursorPosition;
+	// init console
+	CONSOLE::init();
 
 	// set inital snake position
 	this->init_snake();	
@@ -114,7 +90,7 @@ void Game::start_game()
 	while (true)
 	// game loop
 	{
-		Sleep(50);
+		Sleep(_PAUSE_TIME);
 
 		this->move_snake(Direction::RIGHT);
 	}

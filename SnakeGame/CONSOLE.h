@@ -1,10 +1,13 @@
 #pragma once
 #include <Windows.h>
 
+static COORD cursor_pos;
+static HANDLE h_console;
+
 static class CONSOLE
 {
 public: 
-	static COORD get_cursor_position(const HANDLE& h);
-	static HANDLE get_console_handle();
+	static void init();
+	static void write_at_coord(int x, int y, char c);
 	static void destroy_handle(const HANDLE& h);
 };
