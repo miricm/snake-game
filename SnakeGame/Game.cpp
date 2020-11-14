@@ -3,8 +3,11 @@
 #include "Game.h"
 #include "Board.h"
 
-Game::Game()
+Game::Game(const COORD& cursor_pos, const HANDLE& h_console)
 {
+	this->cursor_pos = cursor_pos;
+	this->h_console  = h_console;
+
 	this->board = Board::create_board();
 	this->snake = new Snake;
 }
@@ -48,20 +51,7 @@ void Game::init_snake(COORD& cursor_pos, const HANDLE& console)
 void Game::move_snake(COORD& cursor_pos, const HANDLE& console, Direction dir)
 {
 	// TODO: hide cursor
-
-	// move tail
-	// tail coordinates
-	int x = snake->seq.front().second;
-	int y = snake->seq.front().first;
-
-	cursor_pos.X = x;
-	cursor_pos.Y = y;
-
-	SetConsoleCursorPosition(console, cursor_pos);
-
-	std::cout << " ";
-	board[y][x] = ' ';
-	snake->seq.pop();
+	this->move_tail(cursor_pos, console);
 
 	// switch for new head coordinates
 	switch (dir)
@@ -71,8 +61,8 @@ void Game::move_snake(COORD& cursor_pos, const HANDLE& console, Direction dir)
 	case Direction::DOWN:
 		break;
 	case Direction::RIGHT: {
-		x = snake->seq.back().second + 1;
-		y = snake->seq.back().first;
+		int x = snake->seq.back().second + 1;
+		int y = snake->seq.back().first;
 
 		cursor_pos.X = x;
 		cursor_pos.Y = y;
@@ -87,6 +77,23 @@ void Game::move_snake(COORD& cursor_pos, const HANDLE& console, Direction dir)
 	case Direction::LEFT:
 		break;
 	}	
+}
+
+void Game::move_tail(COORD& cursor_pos, const HANDLE& console)
+{
+	// move tail
+	// tail coordinates
+	int x = snake->seq.front().second;
+	int y = snake->seq.front().first;
+
+	cursor_pos.X = x;
+	cursor_pos.Y = y;
+
+	SetConsoleCursorPosition(console, cursor_pos);
+
+	std::cout << " ";
+	board[y][x] = ' ';
+	snake->seq.pop();
 }
 
 void Game::start_game()

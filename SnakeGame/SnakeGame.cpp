@@ -30,11 +30,9 @@ int main()
 
     // destroy board
 
-    Game game;
+    //Game game();
 
-    game.start_game();
-
-
+    //game.start_game();
     
     return 0;
 }
