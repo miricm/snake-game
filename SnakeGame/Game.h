@@ -1,4 +1,5 @@
 #pragma once
+#include <future>
 #include "Snake.h"
 #include "Direction.h"
 
@@ -13,6 +14,7 @@ private:
 	void move_snake(Direction dir);
 
 	void move_tail();
+	std::future<int> start_key_press_task();
 	// int move_head(Direction dir);
 public:
 	Game();
