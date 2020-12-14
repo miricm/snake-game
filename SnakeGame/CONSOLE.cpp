@@ -21,12 +21,7 @@ void CONSOLE::write_at_coord(int x, int y, char c)
 
 	SetConsoleCursorPosition(h_console, cursor_pos);
 
-	if (c == '*' || c == ' ')
-	{
-		std::cout << c;
-	}
-
-	else throw "INVALID CHARACTER, ONLY ' ' AND '*' SUPPORTED!";	
+	std::cout << c;
 }
 
 void CONSOLE::destroy_handle(const HANDLE& h)
