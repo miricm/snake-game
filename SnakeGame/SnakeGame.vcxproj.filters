@@ -30,6 +30,9 @@
     <ClCompile Include="CONSOLE.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RANDOM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h">
@@ -45,6 +48,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CONSOLE.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RANDOM.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

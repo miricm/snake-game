@@ -5,8 +5,9 @@
 #include "Game.h"
 #include "Board.h"
 #include "CONSOLE.h"
+#include "RANDOM.h"
 
-#define _PAUSE_TIME   20
+#define _PAUSE_TIME   1000
 #define KEY_UP        72
 #define KEY_DOWN      80
 #define KEY_LEFT      75
@@ -98,6 +99,21 @@ void Game::move_tail()
 	snake->seq.pop();
 }
 
+void Game::generate_food()
+{
+	// add * to a random spot on the board
+	int y = RANDOM::get(1, Board::HEIGHT - 2);
+	int x = RANDOM::get(1, Board::WIDTH - 2);
+
+	if (this->board[y][x] != _FILLED)
+	{
+		board[y][x] = _FILLED;
+		CONSOLE::write_at_coord(x, y, _FILLED);
+	}
+
+	else this->generate_food();
+}
+
 std::future<int> Game::start_key_press_task()
 {
 	return std::async(std::launch::async, []
@@ -133,6 +149,7 @@ void Game::start_game()
 	// game loop
 	{
 		this->move_snake(dir);
+		this->generate_food();
 
 		Sleep(_PAUSE_TIME);
 

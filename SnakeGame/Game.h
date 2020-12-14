@@ -15,7 +15,9 @@ private:
 
 	void move_tail();
 	std::future<int> start_key_press_task();
-	// int move_head(Direction dir);
+
+	void generate_food();
+
 public:
 	Game();
 	void start_game();
