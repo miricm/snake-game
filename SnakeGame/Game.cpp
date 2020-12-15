@@ -39,8 +39,8 @@ void Game::show_board()
 
 void Game::init_snake()
 {
-	snake->seq.push({ 2,2 }); // front
-	snake->seq.push({ 2,3 }); // back
+	snake->seq.push_front({ 2,2 }); // front
+	snake->seq.push_front({ 2,3 }); // back
 
 	// fill the board object	
 	board[2][2] = _FILLED;
@@ -84,19 +84,19 @@ void Game::move_snake(Direction dir)
 
 	CONSOLE::write_at_coord(x, y, _FILLED);
 	board[y][x] = _FILLED;
-	snake->seq.push({ y, x });
+	snake->seq.push_front({ y, x });
 }
 
 void Game::move_tail()
 {
 	// tail coordinates
-	int x = snake->seq.front().second;
-	int y = snake->seq.front().first;
+	int x = snake->seq.back().second;
+	int y = snake->seq.back().first;
 
 	CONSOLE::write_at_coord(x, y, _EMPTY);
 
 	board[y][x] = _EMPTY;
-	snake->seq.pop();
+	snake->seq.pop_back();
 }
 
 void Game::generate_food()

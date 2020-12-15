@@ -18,6 +18,7 @@ private:
 
 	void generate_food();
 
+
 public:
 	Game();
 	void start_game();
