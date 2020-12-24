@@ -6,6 +6,7 @@
 #include "Board.h"
 #include "CONSOLE.h"
 #include "RANDOM.h"
+#include "CollisionType.h"
 
 #define _PAUSE_TIME   1000
 #define KEY_UP        72
@@ -17,6 +18,9 @@
 #define _EMPTY       ' '
 #define _FILLED      '*'
 
+static std::unordered_map<Direction, std::pair<int, int>> dir_map = 
+{ {Direction::RIGHT, {0, 1}}, {Direction::LEFT, {0, -1}},
+	{ Direction::UP, {-1, 0}}, {Direction::DOWN, {1, 0}} };
 
 Game::Game()
 {
@@ -55,32 +59,10 @@ void Game::move_snake(Direction dir)
 	// TODO: hide cursor
 	this->move_tail();
 
-	int x = 0, y = 0;
+	auto map = dir_map[dir];
 
-	// switch for new head coordinates
-	switch (dir)
-	{
-	case Direction::UP: {
-		x = snake->seq.back().second;
-		y = snake->seq.back().first - 1;
-		break;
-	}
-	case Direction::DOWN: {
-		x = snake->seq.back().second;
-		y = snake->seq.back().first + 1;
-		break;
-	}
-	case Direction::RIGHT: {
-		x = snake->seq.back().second + 1;
-		y = snake->seq.back().first;
-		break;
-	}
-	case Direction::LEFT: {
-		x = snake->seq.back().second - 1;
-		y = snake->seq.back().first;
-		break;
-	}
-	}
+	int x = snake->seq.back().second + map.second;
+	int y = snake->seq.back().first + map.first;
 
 	CONSOLE::write_at_coord(x, y, _FILLED);
 	board[y][x] = _FILLED;
@@ -129,6 +111,26 @@ std::future<int> Game::start_key_press_task()
 	});
 }
 
+CollisionType Game::detect_collision(Direction dir)
+{
+	auto map = dir_map[dir];
+
+	int x = snake->seq.back().second + map.second;
+	int y = snake->seq.back().first + map.first;
+
+	if (this->board[y][x] == _FILLED)
+	{
+		for (std::pair<int, int> c : this->snake->seq)
+		{
+			if (c.first == y && c.second == x) return CollisionType::BODY;
+		}
+
+		return CollisionType::FOOD;
+	}
+
+	return CollisionType::NONE;
+}
+
 void Game::start_game()
 {
 	this->show_board();
@@ -148,6 +150,11 @@ void Game::start_game()
 	while (game_is_running)
 	// game loop
 	{
+		// detect collision
+		// before moving 
+
+		auto collision = this->detect_collision(dir);
+
 		this->move_snake(dir);
 		this->generate_food();
 
