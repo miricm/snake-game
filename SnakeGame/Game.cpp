@@ -8,7 +8,7 @@
 #include "RANDOM.h"
 #include "CollisionType.h"
 
-#define _PAUSE_TIME   100
+#define _PAUSE_TIME   200
 #define KEY_UP        72
 #define KEY_DOWN      80
 #define KEY_LEFT      75
@@ -152,18 +152,18 @@ CollisionType Game::detect_collision(const Direction& dir)
 void Game::start_game()
 {
 	this->show_board();
-
 	// init console
 	CONSOLE::init();
-
 	// set inital snake position
 	this->init_snake();
-
 	// start parallel task
 	auto f = start_key_press_task();
 
+	// init variables
 	Direction dir = Direction::RIGHT; // starting direction of the snake
-	bool game_is_running = true;
+
+	bool game_is_running  = true;
+	bool food_generated   = false;
 
 	while (game_is_running)
 	// game loop
@@ -178,10 +178,17 @@ void Game::start_game()
 		if (collision == CollisionType::FOOD)
 		{
 			// enlarge snake
+			food_generated = false;
 		}
 
 		this->move_snake(dir);
-		this->generate_food();
+
+		if (!food_generated)
+		{
+			this->generate_food();
+			food_generated = true;
+		}
+		
 
 		Sleep(_PAUSE_TIME);
 
@@ -192,17 +199,29 @@ void Game::start_game()
 			switch (key)
 			{
 			case KEY_UP:
-				dir = Direction::UP;
-				break;
+				if(dir != Direction::DOWN)
+				{
+					dir = Direction::UP;
+					break;
+				}				
 			case KEY_DOWN:
-				dir = Direction::DOWN;
-				break;
+				if (dir != Direction::UP)
+				{
+					dir = Direction::DOWN;
+					break;
+				}
 			case KEY_LEFT:
-				dir = Direction::LEFT;
-				break;
+				if (dir != Direction::RIGHT)
+				{
+					dir = Direction::LEFT;
+					break;
+				}
 			case KEY_RIGHT:
-				dir = Direction::RIGHT;
-				break;
+				if (dir != Direction::LEFT)
+				{
+					dir = Direction::RIGHT;
+					break;
+				}
 			case KEY_ESC:
 				game_is_running = false;
 				break;
