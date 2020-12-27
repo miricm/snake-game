@@ -1,14 +1,14 @@
 #include <iostream>
 #include <future>
 #include <conio.h>
-#include <ctime>
+#include <unordered_map>
 #include "Game.h"
 #include "Board.h"
 #include "CONSOLE.h"
 #include "RANDOM.h"
 #include "CollisionType.h"
 
-#define _PAUSE_TIME   1000
+#define _PAUSE_TIME   100
 #define KEY_UP        72
 #define KEY_DOWN      80
 #define KEY_LEFT      75
@@ -22,10 +22,25 @@ static std::unordered_map<Direction, std::pair<int, int>> dir_map =
 { {Direction::RIGHT, {0, 1}}, {Direction::LEFT, {0, -1}},
 	{ Direction::UP, {-1, 0}}, {Direction::DOWN, {1, 0}} };
 
+
 Game::Game()
 {
 	this->board = Board::create_board();
 	this->snake = new Snake;
+}
+
+Game::~Game()
+{
+	delete this->snake;
+
+	for (size_t i = 0; i < Board::WIDTH; i++)
+	{
+		delete[] *(this->board + i);
+	}
+
+	delete[] this->board;
+
+	std::cout << "Snake and board destroyed!\n";
 }
 
 void Game::show_board()
@@ -111,16 +126,19 @@ std::future<int> Game::start_key_press_task()
 	});
 }
 
-CollisionType Game::detect_collision(Direction dir)
+CollisionType Game::detect_collision(const Direction& dir)
 {
 	auto map = dir_map[dir];
 
-	int x = snake->seq.back().second + map.second;
-	int y = snake->seq.back().first + map.first;
+	// dont know why front() works
+	int x = snake->seq.front().second + map.second;
+	int y = snake->seq.front().first + map.first;
+
+	auto cell = this->board[y][x];
 
 	if (this->board[y][x] == _FILLED)
 	{
-		for (std::pair<int, int> c : this->snake->seq)
+		for (auto c : this->snake->seq)
 		{
 			if (c.first == y && c.second == x) return CollisionType::BODY;
 		}
@@ -150,10 +168,17 @@ void Game::start_game()
 	while (game_is_running)
 	// game loop
 	{
-		// detect collision
-		// before moving 
-
 		auto collision = this->detect_collision(dir);
+		if (collision == CollisionType::BODY)
+		{
+			// game over
+			break;
+		}			
+
+		if (collision == CollisionType::FOOD)
+		{
+			// enlarge snake
+		}
 
 		this->move_snake(dir);
 		this->generate_food();
@@ -186,4 +211,7 @@ void Game::start_game()
 			f = start_key_press_task();			
 		}						
 	}
+
+	// system("cls");
+	std::cout << "Game over!\n";
 }

@@ -1,6 +1,5 @@
 #pragma once
 #include <future>
-#include <unordered_map>
 #include "Snake.h"
 #include "Direction.h"
 #include "CollisionType.h"
@@ -19,10 +18,12 @@ private:
 	std::future<int> start_key_press_task();
 
 	void generate_food();
-	CollisionType detect_collision(Direction dir);
+
+	CollisionType detect_collision(const Direction& dir);
 
 public:
 	Game();
+	~Game();
 	void start_game();
 	// void end_game();
 };
