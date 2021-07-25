@@ -5,11 +5,10 @@
 
 trigger:
 - master
+- pipeline
 
 pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: |
-    make
-  displayName: 'make'
+- script: g++ -o SnakeGame/Debug/SnakeGame SnakeGame/SnakeGame.cpp
